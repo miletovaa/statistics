@@ -1,0 +1,127 @@
+---
+title: "Quiz 1"
+author: "Anna Miletova, 89231151"
+date: "2025-03-23"
+output: 
+  pdf_document:
+    latex_engine: xelatex
+---
+
+```{r}
+my.data <- read.table("data.txt", header = TRUE, sep = "\t")
+
+x <- 1
+z <- 5
+
+my.data <- my.data[unique(c(seq(x,nrow(my.data),by=10),seq(z,nrow(my.data),by=10))),]
+```
+
+## 1. Histogram for Books..how.many.per.year
+
+```{r}
+books <- my.data$Books..how.many.per.year
+
+hist(books, main="Histogram of Books", xlab="Books per Year")
+```
+
+The histogram is positively asymmetric.
+
+Since the graph is asymmetric to the right we expect median to be more than average and median to be a more appropriate measure.
+
+### Central tendency measures
+
+```{r}
+modus <- function(v) {
+  uniq_vals <- unique(v)
+  uniq_vals[which.max(tabulate(match(v, uniq_vals)))]
+}
+
+cat(
+  "Average: ", mean(books), 
+  "\nMedium: ", median(books), 
+  "\nModus: ", modus(books)
+)
+```
+
+### Measures of variability
+
+```{r}
+# cat("IQR: ", quantile(books, 0.75) - quantile(books, 0.25))
+cat(
+  "Range: ", max(books) - min(books), 
+  "\nIQR: ", IQR(books), 
+  "\nStandard deviation: ", sd(books)
+)
+```
+
+## 2. Boxplot for Friends.on.Facebook
+
+```{r}
+friends <- my.data$Friends.on.Facebook
+
+boxplot(friends, main="Boxplot of Facebook Friends", ylab="Friends")
+```
+
+```{r}
+summary(friends) # Min, Max, Mean, Median, Quartiles
+IQR(friends, na.rm=TRUE)
+```
+
+The outliers, points outside of the "whiskers", are not observed in the boxplot.
+
+## 3. Circumference of a circle with a radius r
+
+```{r}
+circumference <- function(r) {
+  return(2 * pi * r)
+}
+cat("Circumference of the circle, where r = x =", x ,"is", circumference(x))
+```
+
+## 4. Roulette probability
+
+```{r}
+times <- as.numeric(paste0(x, 5))
+win_probability <- 1/37
+
+P_X_equals_z <- dbinom(z, size = times, prob = win_probability)
+cat("P(X =", z, ") =", P_X_equals_z)
+```
+
+### PDF
+
+```{r}
+k_values <- 0:times
+pmf_values <- dbinom(k_values, size = times, prob = win_probability)
+
+plot(
+  x    = k_values, 
+  y    = pmf_values, 
+  type = "s",
+  main = "PMF of X ~ Binomial(15, 1/37)",
+  xlab = "Number of wins (k)",
+  ylab = "P(X = k)"
+)
+```
+
+### CDF
+
+```{r}
+cdf_values <- pbinom(k_values, size = times, prob = win_probability)
+
+plot(
+  x    = k_values, 
+  y    = cdf_values, 
+  type = "s",
+  main = "CDF of X ~ Binomial(15, 1/37)",
+  xlab = "Number of wins (k)",
+  ylab = "P(X <= k)"
+)
+```
+
+### Probability of winning less than 5 times
+
+```{r}
+P_less_than_5 <- pbinom(4, size = times, prob = win_probability)
+cat("P(X < 5) =", P_less_than_5)
+```
