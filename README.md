@@ -30,7 +30,7 @@ A larger project that summarizes the skills learned throughout the course, combi
 
 The main dataset used is the Wine Quality Data Set (![red wine](https://github.com/miletovaa/statistics/blob/main/Assignment/winequality-red.csv) and ![white wine](https://github.com/miletovaa/statistics/blob/main/Assignment/winequality-white.csv) subsets), which offers a great playground for comparing characteristics of red and white wines.
 
-![🔗 View the full assignment report here](https://miletovaa.github.io/statistics/Assignment/Assignment.html)
+🔗 View the full assignment report here: <https://miletovaa.github.io/statistics/Assignment/Assignment.html>
 
 ### Homeworks Summary (hw1, hw2, hw3)
 - Quiz 1: Central tendency, variability, histogram & boxplot analysis, binomial probability
