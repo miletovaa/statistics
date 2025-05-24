@@ -1,0 +1,95 @@
+---
+title: "Quiz 2"
+author: "Anna Miletova, 89231151"
+date: "2025-04-26"
+output: 
+  pdf_document:
+    latex_engine: xelatex
+---
+
+```{r setup, include=FALSE}
+# knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+```
+
+```{r}
+my.data <- read.csv("data.txt", sep="\t")
+
+x <-5
+z <-1
+my.data <- my.data[unique(c(seq(x,nrow(my.data),by=10),seq(z,nrow(my.data),by=10))),]
+```
+
+## Task 1. Check if he population mean of male students is greater than 180 cm.
+
+Null hypothesis: the mean height of male students is 180 cm or less.
+
+Alternative hypothesis: the mean height is greater than 180 cm.
+
+```{r}
+male.data <- my.data %>%
+  filter(Sex == "male") %>%
+  pull(Height)
+
+t.test(male.data, mu = 180, alternative = "greater")
+```
+
+Since we take α = 0.05 and p-value is 0.0009434 \< 0.05, we reject the null hypothesis and make a conclution that the mean height of male students is greater than 180 cm.
+
+## Task 2. Plot and distribution.
+
+```{r}
+hist(male.data, 
+     main = "Histogram of Male Heights", 
+     xlab = "Height (cm)",
+     breaks = 10)
+```
+
+Histogram shows that the data from previous exercise is not perfectly normally distributed.
+
+## Task 3.
+
+```{r}
+p <- 0.5
+n <- 30
+num_samples <- 200
+
+sample_means <- numeric(num_samples)
+
+xbar <- replicate(num_samples, mean(rgeom(n, p)))
+hist(xbar,
+     breaks = 20,
+     main   = expression(paste("Sampling distribution of ", bar(X)[n])),
+     xlab   = expression(bar(X)[n]))
+```
+
+Distribution is close to normal.
+
+## Task 4.
+
+```{r}
+power.t.test(delta = 25, sd = 50,
+  sig.level = 0.05, power = 0.8,
+  type = "paired", alternative = "two.sided")
+```
+
+n = 33.3672
+
+Running a power analysis for a paired-sample t-test (α = 0.05, power = 0.80, aiming to spot a 25 mg/dL drop with 50 mg/dL variability) shows we need about 34 subjects. That’s the point where we’re likely (80 %) to catch a real effect.
+
+```{r}
+n <- 50
+before <- rnorm(n, mean = 150, sd = 40)
+after <- before - rnorm(n, mean = 25, sd = 50)
+
+head(cbind(before, after), 6)
+
+test <- t.test(before, after, paired = TRUE)
+print(test)
+
+
+cohen_d <- with(test, estimate / (sd(before - after)))
+cohen_d
+```
+
+With our sample of 50 paired readings, the paired t-test gave a p-value \< 0.001 and an average drop of 24 mg/dL, which means that blood-sugar levels went down in a statistically meaningful way; therefore treatment works.
